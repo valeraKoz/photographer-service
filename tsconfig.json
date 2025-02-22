@@ -18,8 +18,20 @@
         "name": "next"
       }
     ],
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@myPrisma/*": ["prisma/*"],
+      "@/*": ["src/*"],
+      "@components/*": ["src/components/*"],
+      "@modules/*": ["src/modules/*"],
+      "@service/*": ["src/service/*"],
+      "@shared/*": ["src/shared/*"],
+      "@ui/*": ["src/ui/*"],
+      "@views/*": ["src/views/*"],
+      "@api/*": ["src/app/api/*"],
+      "@utils/*": ["utils/*"],
+      "@constants/*": ["src/constants/*"],
+      "@lib/*": ["src/lib/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

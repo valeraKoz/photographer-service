@@ -1,13 +1,12 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: #f5f6fa;
   --foreground: #171717;
+  --color-title: #572379;
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
@@ -19,3 +18,13 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+h1,h2,h3,h4,h5,h6, a{
+  color: var(--color-title);
+}
+
+button {
+  cursor: pointer;
+}
+
+

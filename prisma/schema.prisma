@@ -1,0 +1,79 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Project {
+  id             Int              @id @default(autoincrement())
+  title          String
+  coverImageKey  String?
+  creationDate   DateTime         @default(now())
+  autoDeleteDate DateTime?
+  photoshootDate DateTime?
+  fileCount      Int?             @default(0)
+  uniqueLink     String           @unique
+  visitCount     Int?             @default(0)
+  size           Int?             @default(0)
+  downloadCount  Int?             @default(0)
+  favoritesPhoto FavoritesPhoto[]
+  folders        Folders[]
+}
+
+model Folders {
+  id          Int     @id @default(autoincrement())
+  title       String
+  description String?
+  fileCount   Int     @default(0)
+  projectId   Int
+  size        Int?    @default(0)
+  Project     Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  ptotos      Photo[]
+
+  @@unique([title, projectId])
+}
+
+model FavoritesPhoto {
+  id        Int     @id @default(autoincrement())
+  projectId Int
+  Project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  photos    Photo[]
+}
+
+model Photo {
+  id                 Int             @id @default(autoincrement())
+  title              String          @unique
+  compressedPhotoKey String
+  originalPhotoKey   String
+  foldersId          Int
+  isFavorite         Boolean         @default(false)
+  favoritesPhotoId   Int?
+  compressedSize     Int
+  originalSize       Int
+  FavoritesPhoto     FavoritesPhoto? @relation(fields: [favoritesPhotoId], references: [id], onDelete: Cascade)
+  Folders            Folders         @relation(fields: [foldersId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  createdAt DateTime  @default(now())
+  yandexId  String    @unique
+  avatarId  String?   @default("")
+  isAdmin   Boolean?  @default(false)
+  sessions  Session[]
+}
+
+model Session {
+  userId    String
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  id        String   @id @default(uuid())
+  token     String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+}
