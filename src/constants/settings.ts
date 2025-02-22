@@ -17,11 +17,11 @@ export const DASHBOARD_CONFIG = {
 }
 
 export const YANDEX_CONFIG = {
-    REGION: 'ru-central1',
-    ENDPOINT: 'https://storage.yandexcloud.net',
-    BUCKET_NAME: 'ph-kattrina',
-    ACCESS_KEY_ID: 'YCAJELb4m_DotwjlEzO4Wk9Qa',
-    SECRET_ACCESS_KEY: 'YCNoVfNmRH9j-_RZP8z3F6ZiS3cf3Yit8gdbHk4u'
+    REGION: process.env.YANDEX_S3_REGION,
+    ENDPOINT: process.env.YANDEX_S3_ENDPOINT,
+    BUCKET_NAME: process.env.YANDEX_S3_BUCKET_NAME,
+    ACCESS_KEY_ID: process.env.YANDEX_S3_ACCESS_KEY_ID,
+    SECRET_ACCESS_KEY: process.env.YANDEX_S3_SECRET_ACCESS_KEY,
 }
 
 export const YANDEX_OAUTH = {
