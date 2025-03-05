@@ -32,7 +32,7 @@ model Folders {
   projectId   Int
   size        Int?    @default(0)
   Project     Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  ptotos      Photo[]
+  photos      Photo[]
 
   @@unique([title, projectId])
 }
@@ -46,7 +46,7 @@ model FavoritesPhoto {
 
 model Photo {
   id                 Int             @id @default(autoincrement())
-  title              String          @unique
+  title              String
   compressedPhotoKey String
   originalPhotoKey   String
   foldersId          Int

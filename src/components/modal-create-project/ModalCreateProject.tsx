@@ -1,5 +1,4 @@
 import React, {Dispatch, SetStateAction} from "react";
-import { IoClose } from "react-icons/io5";
 import {FormProvider, SubmitHandler, useForm} from "react-hook-form";
 import {NewFormSection} from "@ui/form/NewFormSection";
 import {InputForm} from "@ui/form/InputForm";
@@ -10,6 +9,8 @@ import {redirect} from "next/navigation";
 import {APP_PATH} from "@constants/urls";
 import {IProjectCreate} from "@/lib/db/types";
 import {useCreateProject} from "@lib/db/hooks";
+import {ModalTitle} from "@components/modal-title/ModalTitle";
+import {ModalButtons} from "@components/modal-buttons/ModalButtons";
 
 export const ModalCreateProject = (
     {
@@ -28,7 +29,7 @@ export const ModalCreateProject = (
         creationDate - дата создания проекта
         uniqueLink - генерируется уникальная ссылка
      */
-    const defaultSetting: IProjectCreate = {
+    const defaultValues: IProjectCreate = {
         title: '',
         photoshootDate: undefined,
         creationDate: new Date(),
@@ -38,7 +39,7 @@ export const ModalCreateProject = (
     }
 
     const methods = useForm<IProjectCreate>({
-        defaultValues: defaultSetting,
+        defaultValues,
         criteriaMode: 'all',
         mode: 'all'
     })
@@ -76,19 +77,12 @@ export const ModalCreateProject = (
     const handleReset = (e:  React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
         setModalOpen(false);
-        reset(defaultSetting)
+        reset(defaultValues)
     }
 
     return (
-        <div className='modal-project-setting min-w-[500px] p-8 bg-white rounded-lg flex flex-col gap-4'>
-            <div className='flex justify-between items-center'>
-                <h1 className='text-xl'>{modalTitle}</h1>
-                <button
-                    onClick={(e) => handleReset(e)}
-                    className='bg-neutral-200 p-2 rounded'>
-                    <IoClose/>
-                </button>
-            </div>
+        <>
+            <ModalTitle title={modalTitle} callback={handleReset}/>
             <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-5'>
                     <NewFormSection>
@@ -119,20 +113,9 @@ export const ModalCreateProject = (
                             }}/>
                         <SelectForm required name={'dayToDelete'} title='Срок хранения' defaultValue='30'/>
                     </NewFormSection>
-                    <div className='flex gap-2 justify-end'>
-                        <button
-                            onClick={(e) => handleReset(e)}
-                            className='w-1/4 p-2 rounded text-sm text-white bg-neutral-800'>
-                            Отмена
-                        </button>
-                        <button
-                            className='w-1/4 bg-neutral-300 text-sm p-2 rounded'
-                            type="submit">
-                            Добавить
-                        </button>
-                    </div>
+                    <ModalButtons callback={handleReset}/>
                 </form>
             </FormProvider>
-        </div>
+        </>
     )
 }

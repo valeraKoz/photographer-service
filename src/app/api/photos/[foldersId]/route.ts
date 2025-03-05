@@ -1,6 +1,8 @@
 import {NextRequest, NextResponse} from "next/server";
 import prisma from "@myPrisma/prisma-client";
-import {type Photo, Prisma} from "@prisma/client"
+import {DB_QueryKeys} from "@lib/db/hooks";
+import {s3Client} from "@service/S3Client/s3Client_init";
+import {IPhoto} from "@myPrisma/types";
 
 
 export const GET = async (
@@ -9,56 +11,50 @@ export const GET = async (
 ) => {
     const foldersId = +(await params).foldersId
 
-    const photos = await prisma.photo.findMany({
+    const prismaResponse = await prisma.folders.findUnique({
         where:{
-            foldersId
+            id: foldersId
+        },
+        include:{
+            photos: true
         }
     })
-
-    if(photos.length > 0){
-        return NextResponse.json(photos)
-    } else {
-        return NextResponse.json({
-            message: `Photo in folder with id: ${foldersId} - not found`,
-            data: null
-        })
-    }
+    // если нет фото в папке отправляет пустой массив
+    // если нет проекта отправляет пустой массив
+    return NextResponse.json(prismaResponse?.photos || [])
 }
 
 export const POST = async (
     req: NextRequest,
     {params}: {params: Promise<{foldersId: string}>}
 )=>{
-    const foldersId = +(await params).foldersId;
-    const photos = (await req.json()).map((photo:Photo)=> ({
-        ...photo,
-        foldersId
-    }))
-    console.log(photos);
 
+    const fileFormData = await req.formData();
+    const file = fileFormData.get(DB_QueryKeys.photos) as File;
+    const fileInfo = JSON.parse(fileFormData.get('info') as string);
+
+    if (!file) return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
+
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
 
     try{
-        const response = await prisma.photo.createMany({
-            data: photos
+        if(!buffer || typeof fileInfo.originalPhotoKey !== 'string') {
+            throw new Error("Нет файла или адреса в бакет")}
+        await s3Client.PostObject(fileInfo.originalPhotoKey, buffer)
+        const response = await prisma.photo.create({
+            data: {
+                ...fileInfo,
+                compressedSize: 0,
+                compressedPhotoKey: ''
+            }
         })
-        return NextResponse.json({
-            response
-        })
-    }
-    catch (error){
-        if(error instanceof Prisma.PrismaClientKnownRequestError){
-            return NextResponse.json({
-                error,
-                code: error.code,
-                target: error?.meta?.target
-            })
-        } else {
-            return NextResponse.json({
-                error
-            })
-        }
+        console.log(response)
+    }catch (e){
+        console.log(e)
     }
 
+    return NextResponse.json({message: 'okay'})
 }
 
 

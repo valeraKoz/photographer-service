@@ -1,0 +1,11 @@
+.modal{
+  transition: .5s ease-in-out;
+  &--open{
+    opacity: 1;
+    pointer-events: auto;
+  }
+  &--close{
+    opacity: 0;
+    pointer-events: none;
+  }
+}

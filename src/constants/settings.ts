@@ -17,11 +17,14 @@ export const DASHBOARD_CONFIG = {
 }
 
 export const YANDEX_CONFIG = {
-    REGION: process.env.YANDEX_S3_REGION,
-    ENDPOINT: process.env.YANDEX_S3_ENDPOINT,
-    BUCKET_NAME: process.env.YANDEX_S3_BUCKET_NAME,
-    ACCESS_KEY_ID: process.env.YANDEX_S3_ACCESS_KEY_ID,
-    SECRET_ACCESS_KEY: process.env.YANDEX_S3_SECRET_ACCESS_KEY,
+    REGION: process.env.YANDEX_S3_REGION as string,
+    ENDPOINT: process.env.YANDEX_S3_ENDPOINT as string,
+    BUCKET_NAME: process.env.YANDEX_S3_BUCKET_NAME as string,
+    ACCESS_KEY_ID: process.env.YANDEX_S3_ACCESS_KEY_ID as string,
+    SECRET_ACCESS_KEY: process.env.YANDEX_S3_SECRET_ACCESS_KEY as string,
+}
+export const YANDEX_CONFIG_PUBLIC = {
+    STORAGE: process.env.NEXT_PUBLIC_YANDEX_S3_STORAGE as string,
 }
 
 export const YANDEX_OAUTH = {

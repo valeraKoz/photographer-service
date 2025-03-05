@@ -5,13 +5,13 @@ import {useDeleteFolderByProjectAndFolderId} from "@lib/db/hooks/useDeleteFolder
 import {deletePhoto} from "@lib/db/hooks/deletePhoto";
 import {useDeleteProjectById} from "@lib/db/hooks/useDeleteProjectById";
 import {useGetAllFolders} from "@lib/db/hooks/useGetAllFolders";
-import {getPhotoFromFolder} from "@lib/db/hooks/getPhotoFromFolder";
+import {useGetPhotoFromFolder} from "@lib/db/hooks/useGetPhotoFromFolder";
 import {useGetProjectById} from "@lib/db/hooks/useGetProject";
 
 import {useGetAllProjects} from "@lib/db/hooks/useGetAllProjects";
 
 export {
-    getPhotoFromFolder,
+    useGetPhotoFromFolder,
     addPhotoInFolder,
     deletePhoto,
 

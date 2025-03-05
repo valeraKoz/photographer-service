@@ -9,17 +9,17 @@ export const DashboardLink = (
         url,
         title,
         icon,
-        border='right',
+        border,
     }:
     {
         url:string,
         title:string,
         icon:React.ReactNode,
-        border?: 'right'|'left'|'bottom'|'top'| 'all' | 'none'
+        border: 'right'|'left'|'bottom'|'top'| 'all' | 'none'
     }) => {
 
     const pathname = usePathname();
-    const isActive = border === 'right' ? pathname.startsWith(url) : pathname === url;
+    const isActive = pathname.startsWith(url);
 
 
 

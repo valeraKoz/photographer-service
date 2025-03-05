@@ -17,14 +17,17 @@ export const DashboardNavbar = () => {
 
             <nav className='flex flex-col w-full'>
                 <DashboardLink
+                    border='right'
                     url={DASHBOARD_CONFIG.NAVBAR.PAGES.URL}
                     title={DASHBOARD_CONFIG.NAVBAR.PAGES.TITLE}
                     icon={<IoDocumentTextOutline size={DASHBOARD_CONFIG.ICON_SIZE}/>}/>
                 <DashboardLink
+                    border='right'
                     url={DASHBOARD_CONFIG.NAVBAR.DISK.URL}
                     title={DASHBOARD_CONFIG.NAVBAR.DISK.TITLE}
                     icon={<GrStorage size={DASHBOARD_CONFIG.ICON_SIZE}/>}/>
                 <DashboardLink
+                    border='right'
                     url={DASHBOARD_CONFIG.NAVBAR.CARD.URL}
                     title={DASHBOARD_CONFIG.NAVBAR.CARD.TITLE}
                     icon={<FaRegAddressCard size={DASHBOARD_CONFIG.ICON_SIZE}/>}/>

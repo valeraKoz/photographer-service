@@ -4,12 +4,13 @@ import {useGetProjectById} from "@lib/db/hooks";
 import Link from "next/link";
 import {APP_PATH} from "@constants/urls";
 import {BiSolidLeftArrowAlt} from "react-icons/bi";
+import {useProjectId} from "@/app/dashboard/disk/projects/[id]/ProjectProvider";
 
 
-export const DashboardProjectTitle = (
-    {projectId}: { projectId:number}) => {
+export const DashboardProjectTitle = () => {
+    const {projectId} = useProjectId()
+    const {data, isLoading, isSuccess, isError, error} = useGetProjectById(projectId);
 
-    const {data, isLoading, isSuccess, isError, error} = useGetProjectById(projectId!);
     return (
         <div className=''>
             <Link className='flex items-center mb-3' href={APP_PATH.dashboard.projects}>

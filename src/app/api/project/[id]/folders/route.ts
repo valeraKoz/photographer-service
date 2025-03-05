@@ -22,7 +22,6 @@ export const GET = async (
             projectId
         }
     })
-
     return NextResponse.json(folders);
 }
 

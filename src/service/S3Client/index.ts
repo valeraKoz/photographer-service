@@ -1,9 +1,10 @@
-import {S3Client, ListObjectsV2Command} from "@aws-sdk/client-s3";
+import {S3Client, ListObjectsV2Command, PutObjectCommand, S3ServiceException} from "@aws-sdk/client-s3";
 
 import type { _Object } from "@aws-sdk/client-s3";
 
 
 import type {DefaultParams} from "@/service/S3Client/types/S3Client";
+import {s3Client} from "@service/S3Client/s3Client_init";
 
 
 /**
@@ -58,48 +59,32 @@ class YandexS3Client {
         this.Bucket = params.Bucket;
     }
 
-    private _log(...args: unknown[]) {
-        return console.log(`[${new Date().toUTCString()}] `, ...args);
-    }
-
-    /**
-     * Получение списка директорий и папок
-     * @param {string=} route Необязательно. Путь к папке, которую смотрим
-     *
-     * @returns {Promise<_Object[] | undefined | false >} Результат просмотра
-     */
-    public async GetList(route: string): Promise<_Object[] | undefined | false> {
-        if (!route) route = '/';
-        if (route === './') route = '/';
-        if (route) route += route.slice(-1) !== '/' ? '/' : '';
-        if (route[0] === '.') route = route.slice(1);
-        if (route[0] === '/') route = route.slice(1);
-
-        const { s3Client } = this;
-        const { Bucket } = this;
-        const params = {
-            Bucket,
-            Prefix: route,
-            Delimiter: '/',
-        };
-
-        const { debug } = this;
-        const debugObject = 'listObjectsV2';
-        if (debug) this._log('S3', debugObject, 'started');
-        if (debug) this._log('S3', debugObject, params);
-
+    public async PostObject(route: string, file: Buffer<ArrayBufferLike>) {
+        const uploadParams = {
+            Bucket: this.Bucket,
+            Key: route,
+            Body: file,
+        }
         try {
-            const s3Promise = await new Promise<_Object[] | undefined>((resolve, reject) => {
-                const command = new ListObjectsV2Command(params);
-                s3Client.send(command)
-                    .then(({Contents}) => resolve(Contents))
-                    .catch(err => reject(err));
-            });
-            if (debug) this._log('S3', debugObject, 'done:', s3Promise);
-            return s3Promise;
-        } catch (error) {
-            if (debug) this._log('S3', debugObject, 'error:', error);
-            return false
+            const s3Response = await this.s3Client.send(new PutObjectCommand(uploadParams))
+            console.log(s3Response)
+        } catch (caught) {
+            if (
+                caught instanceof S3ServiceException &&
+                caught.name === "EntityTooLarge"
+            ) {
+                console.error(
+                    `Error from S3 while uploading object to ${this.Bucket}. \
+The object was too large. To upload objects larger than 5GB, use the S3 console (160GB max) \
+or the multipart upload API (5TB max).`,
+                );
+            } else if (caught instanceof S3ServiceException) {
+                console.error(
+                    `Error from S3 while uploading object to ${this.Bucket}.  ${caught.name}: ${caught.message}`,
+                );
+            } else {
+                throw caught;
+            }
         }
     }
 }

@@ -11,7 +11,7 @@ export const getAllFolders:getAllFoldersType = async (projectId) => {
 
 export const useGetAllFolders = (projectId: number) => {
     return useQuery({
-        queryKey: ['folders'],
+        queryKey: ['folders', projectId],
         queryFn: ()=>getAllFolders(projectId),
         select: data => data
     })
